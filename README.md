@@ -1,5 +1,11 @@
 # Robot Framework Selenium 2 Extension Library for Table Utilities
 
+Wait, that's too long! How about:
+
+## RF Table Helpers
+
+Yeah, that's a lot easier to say and remember. We'll go with that.
+
 ## About
 
 As this is the first commit, there's not really anything to see here at the moment. However, I will be building out a set of helper functions to extend what [Robot Framework](http://robotframework.org/) can do with the [Selenium 2 Library](http://rtomac.github.io/robotframework-selenium2library/doc/Selenium2Library.html). Specifically, utility functions that allow you to introspect HTML tables to determine a column number by way of its header text, find an instance of a value within a table, etc. 
