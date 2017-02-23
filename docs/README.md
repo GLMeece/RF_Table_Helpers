@@ -8,7 +8,7 @@ Yeah, that's a lot easier to say and remember. We'll go with that.
 
 ## About
 
-There's not a lot of whiz-bang at the moment. However, I will be building out a set of helper functions to extend what [Robot Framework](http://robotframework.org/) can do with the [Selenium 2 Library](http://rtomac.github.io/robotframework-selenium2library/doc/Selenium2Library.html). Specifically, utility functions that allow you to introspect HTML tables to determine a column number by way of its header text, find an instance of a value within a table, etc.
+There's not a lot of whiz-bang at the moment. However, I will be building out a set of helper functions to extend what [Robot Framework](http://robotframework.org/) can do with the [Selenium 2 Library](http://robotframework.org/Selenium2Library/Selenium2Library.html). Specifically, utility functions that allow you to introspect HTML tables to determine a column number by way of its header text, find an instance of a value within a table, etc.
 
 ## Approach
 
