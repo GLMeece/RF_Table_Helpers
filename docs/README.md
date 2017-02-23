@@ -12,8 +12,7 @@ There's not a lot of whiz-bang at the moment. However, I will be building out a 
 
 ## Approach
 
-I'll be using [the approach described in this StackOverflow answer]
-(https://stackoverflow.com/questions/23703870/pass-existing-webdriver-object-to-custom-python-library-for-robot-framework/23704655#23704655). This allows you to reference this library only, and not have to reference the Selenium 2 library separately. This also makes it easier to override methods present in the existing Selenium 2 library.
+I'll be using [the approach described in this StackOverflow answer](https://goo.gl/TFPc2Q). This allows you to reference this library only, and not have to reference the Selenium 2 library separately. This also makes it easier to override methods present in the existing Selenium 2 library.
 
 ## Documentation
 
