@@ -4,12 +4,12 @@
 Various Selenium-related utility functions for Robot Framework, especially 
 table-related functions.
 
-- *Module*: robot_utilities
+- *Module*: rf_Table_Helpers
 - *Platform*: Unix, Windows
 - *Author*: [mailto:glmeece@gmail.com?subject=About rf_Table_Helpers.py|Greg Meece]
 
 """
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 import os
 import platform
