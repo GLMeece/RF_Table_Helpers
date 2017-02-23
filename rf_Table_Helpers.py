@@ -45,6 +45,10 @@ def url_is_reachable(url, expected_response=200):
     | *Args* | ``expected_response`` (int) | _Optional_ return code if other than ``200``. |
     | *Returns*  |  ``boolean``  | Either True or False. |
     | *Raises*  |  exception  | Returns ``False`` on exception. |
+
+    === Example in Robot ===
+    
+    | ${is_reachable} =    URL is Reachable   https://www.google.com
     """
     import requests
     try:

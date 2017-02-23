@@ -1,5 +1,5 @@
-# Header 1
+# Robot Framework Table Helpers
 
-Just testing. 
+Here's [a link to the documentation](rf_table_helpers.html).
 
-Hey, how about [a link to the documentation](rf_table_helpers.html)?
+More [about Github pages](https://pages.github.com/).
