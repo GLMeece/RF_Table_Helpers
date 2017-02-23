@@ -6,10 +6,10 @@ table-related functions.
 
 - *Module*: robot_utilities
 - *Platform*: Unix, Windows
-- *Author*: [mailto:glmeece@gmail.com?subject=About rf_Table_Helpers.py.py|Greg Meece]
+- *Author*: [mailto:glmeece@gmail.com?subject=About rf_Table_Helpers.py|Greg Meece]
 
 """
-__version__ = '0.2.9'
+__version__ = '0.3.0'
 
 import os
 import platform
