@@ -16,9 +16,9 @@ I'll be using [the approach described in this StackOverflow answer](https://goo.
 
 ## Documentation
 
-Here's [the main repo web page](http://glmeece.github.io/RF_Table_Helpers/). Not much to look at right now.
+Here's [the hosted repo web page](http://glmeece.github.io/RF_Table_Helpers/) (not much to look at right now). Here's [the Github repo](https://github.com/GLMeece/RF_Table_Helpers).
 
-Here's what you really want - [the library documentation](http://glmeece.github.io/RF_Table_Helpers/rf_table_helpers.html).
+Here's [the library documentation](http://glmeece.github.io/RF_Table_Helpers/rf_table_helpers.html).
 
 ## Author
 
