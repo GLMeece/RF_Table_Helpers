@@ -1,3 +1,3 @@
-# Robot Framework Selenium Extension Library for Table Utilities
+# Robot Framework Selenium Table Utilities
 
 The actual [README is here](docs/README.md).

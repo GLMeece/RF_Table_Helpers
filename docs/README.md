@@ -1,4 +1,4 @@
-# Robot Framework Selenium Table Utility Extension Library
+# Robot Framework Selenium Table Utilities
 
 Wait, that's too long! How about just:
 
