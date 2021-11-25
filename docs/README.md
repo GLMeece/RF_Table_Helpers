@@ -1,8 +1,8 @@
-# Robot Framework Selenium Extension Library for Table Utilities
+# Robot Framework Selenium Table Utility Extension Library
 
-Wait, that's too long! How about:
+Wait, that's too long! How about just:
 
-## RF Table Helpers
+## Table Helpers
 
 Yeah, that's a lot easier to say and remember. We'll go with that.
 
