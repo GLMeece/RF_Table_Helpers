@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-
 """
-Various Selenium-related utility functions for Robot Framework, especially 
+Selenium-related utility functions for Robot Framework, especially 
 table-related functions.
 
 - *Module*: rf_Table_Helpers
@@ -9,18 +8,21 @@ table-related functions.
 - *Author*: [mailto:glmeece@gmail.com?subject=About rf_Table_Helpers.py|Greg Meece]
 
 """
-__version__ = '0.3.1'
+__version__ = '0.4.0'
 
 import os
-import platform
+import requests
+
 from robot.libraries.BuiltIn import BuiltIn
 from robot.api import logger
 
 # ------------------- Internal Only Functions -------------------
-def _get_sel2lib():
-    """== Gets Current Selenium 2 Instance from Robot Framework ==
+
+
+def _get_sel_lib():
+    """== Gets Current Selenium Library Instance from Robot Framework ==
     
-    - Uses the Robot Framework API to get an object of the current Selenium 2 instance.
+    - Uses the Robot Framework API to get an instance of the current Selenium library.
     - This is an internal helper function only. 
     
     == Calling ==
@@ -29,11 +31,13 @@ def _get_sel2lib():
     | *Returns* | ``object`` | An object instance of the current Selenium 2 library.
     | *Raises* | [none] | |
     """
-    return BuiltIn().get_library_instance('Selenium2Library')
+    return BuiltIn().get_library_instance('SeleniumLibrary')
+
 
 # ------------------ General Purpose Functions ------------------
 
-def url_is_reachable(url, expected_response=200):
+
+def URL_is_reachable(url, expected_response=200):
     """== Verifies URL Passed in Returns a Given Response Code ==
 
     - Pass in URL, and optionally an expected response code (if something other than ``200`` is expected).
@@ -48,9 +52,8 @@ def url_is_reachable(url, expected_response=200):
 
     === Example in Robot ===
     
-    | ${is_reachable} =    URL is Reachable   https://www.google.com
+    | ``${is_reachable} =    URL is Reachable   https://www.google.com``
     """
-    import requests
     try:
         req_return = requests.get(url)
         if req_return.status_code == expected_response:
@@ -60,10 +63,11 @@ def url_is_reachable(url, expected_response=200):
     except:
         return False
 
-def highlight(element, sleep_amount=.33):
-    """== Highlights (blinks) a Selenium Webdriver element ==
 
-    - Pass in a Selenium web element, (and optionally a sleep time value).
+def highlight(element, sleep_amount=.33):
+    """== Highlights a Selenium Webdriver element ==
+
+    - Pass in a Selenium web element (and, optionally, a sleep time value).
     - Highlights the web element with the defined style for the time specified.
     
     == Calling ==
@@ -75,107 +79,118 @@ def highlight(element, sleep_amount=.33):
 
     === Example in Robot ===
     
-    | ${the_element} =    Get Webelement   //*[@id="theElementID"]  # Creates the actual Selenium object
-    | Highlight           ${the_element}  # does the actual highlighting
+    | ``${the_element} =    Get Webelement   //*[@id="theElementID"]``  # Creates the actual Selenium object
+    | ``Highlight           ${the_element}``  # does the actual highlighting
     ...alternately, with specified time:
-    | Highlight           ${the_element}  sleep_amount=${1.5}  # Must encapsulate float value this way
+    | ``Highlight           ${the_element}  sleep_amount=${1.5}``  # Must encapsulate float value this way
     """
     import time
     driver = element._parent
     # Make the next two variables, we can tweak the style of highlighting more easily
     back_color = "yellow"
     outline_style = "2px dotted red"
+
     def apply_style(s):
-        driver.execute_script("arguments[0].setAttribute('style', arguments[1]);",
-                              element, s)
+        driver.execute_script(
+            "arguments[0].setAttribute('style', arguments[1]);", element, s)
+
     original_style = element.get_attribute('style')
-    hilite_style = ("background: {}; border: {};").format(back_color, outline_style)
+    hilite_style = (f"background: {back_color}; border: {outline_style};")
     apply_style(hilite_style)
     time.sleep(sleep_amount)
     apply_style(original_style)
 
+
 # -------------------- HTML Table Functions ---------------------
+
 
 def get_column_number(table_locator, col_text, loglevel='INFO'):
     """== Returns Number of Specified Column ==
     
-    Returns the number of the first column found which contains the ``col_text`` string.
-
-    - Does not require an exact match; if there is a column named ``Foobar`` and you input ``Foo`` then it will match.
+    Returns the number of the first column found which contains the
+    ``col_text`` string.
+    - Returns the first column encountered that matches string.
+    - Does not require an exact match; if there is a column named ``Foobar``
+      and you input ``Foo`` then it will match.
+    - Throws an assertion of the column does not exist. If this is the desired
+      behavior, the log will show the error. If you want to 'preflight' before
+      calling, it is suggested you call `Does Column Exist` first.
     
     === Calling ===
     
-    | *Args* | ``table_locator`` (str) | The table locator containing the column whose number you desire. |
-    |        | ``col_text`` (str) | The string of the column you want to locate. |
+    | *Args* | ``table_locator`` (str) | Table locator containing the column. |
+    | | ``col_text`` (str) | The text of the column you want to locate. |
+    | | ``loglevel`` (str) | _Optional_ Log level default is ``INFO`` |
     | *Returns* | ``int`` | Number of column containing string ``col_name``. |
-    | *Raises* | AssertionError | If ``col_name`` cannot be found in the table specified. |
+    | *Raises* | AssertionError | If ``col_name`` cannot be found in table. |
 
     === Example in Robot ===
-
-    | ${column_number} =    Get Column Number    xpath=//*[@id="deviceListHeader"]    Unsafe
+    | ``${col_num}    Get Column Number    //*[@id="dataTable"]    Phone``
     """
-    sel2lib = _get_sel2lib()
-    locators = sel2lib._table_element_finder._parse_table_locator(table_locator, 'header')
     found_it = False
+    counter = 0  # incrementing through table columns
+    output = 0  # if we fail to find it, we return a zero (which doesn't exist)
+    sel_lib = _get_sel_lib()
+
+    locators = sel_lib.find_elements(table_locator + '//table//th')
     for locator in locators:
-        elements = sel2lib._element_finder.find(sel2lib._current_browser(), locator)
-        counter = 0
-        for element in elements:
-            counter += 1
-            if col_text in element.text:
-                output = counter
-                found_it = True
-                break
+        counter += 1
+        if col_text in locator.text:
+            found_it = True
+            output = counter
+            break
     if found_it is False:
-        sel2lib.log_source(loglevel)
-        raise AssertionError("No column containing '{}' found in the table identified via {}!".format(col_text, table_locator))
+        sel_lib.log_source(loglevel)
+        assert_msg = f"≻ No column containing '{col_text}' found in the table located via '{table_locator}'!"
+        raise AssertionError(assert_msg)
     return output
+
 
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-def does_column_with_string_exist(table_locator, col_text, loglevel='INFO'):
-    """== Does Column Exists in Table Header? ==
-    
-    Returns ``True`` if a column is found which contains the ``col_text`` text.
 
-    - Does not require an exact match; if there is a column named ``Foobar`` and you input ``Foo`` then it will match.
+def does_column_exist(table_locator, col_text):
+    """== Does Column Exist in Table Header? ==
+    
+    Returns ``True`` if a column exists which contains the ``col_text`` string.
+    - Does not require an exact match; if there is a column named ``Foobar``
+      and you input ``Foo`` then it will match.
     
     === Calling ===
     
-    | *Args* | ``table_locator`` (str) | The table locator containing the column you're testing for. |
+    | *Args* | ``table_locator`` (str) | Table locator with the column you're testing for. |
     |        | ``col_text`` (str) | The string of the column you want to test for existence. |
     | *Returns* | ``Boolean`` | Returns ``True`` if found; elsewise ``False``. |
     | *Raises* | [none] | |
 
     === Example in Robot ===
-
-    | ${column_exists} =  Does Column with String Exist    xpath=//*[@id="deviceListHeader"]    Unsafe
+    | ``${col_exists}    Does Column Exist    //*[@id="dataTable"]    Phone``
     """
-    sel2lib = _get_sel2lib()
-    locators = sel2lib._table_element_finder._parse_table_locator(table_locator, 'header')
+    sel_lib = _get_sel_lib()
+    locators = sel_lib.find_elements(table_locator + '//table//th')
     found_it = False
     for locator in locators:
-        elements = sel2lib._element_finder.find(sel2lib._current_browser(), locator)
-        for element in elements:
-            if col_text in element.text:
-                found_it = True
-                break
+        if col_text in locator.text:
+            found_it = True
+            break
     return found_it
 
+
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 
 def _main():
     """== Runs Some the Embedded Routines as a Crude Test ==
     """
-    import os
-    print "This module (" + os.path.basename(__file__) + ") has been called directly."
+    print(f"Module '{os.path.basename(__file__)}' was called directly.")
 
     # Put some test calls here to make sure it's working...OK?
-    print "Testing connectivity to Google..."
+    print("Testing connectivity to Google...")
     reponse_eval = url_is_reachable('http://www.google.com')
-    print "The result was {}".format(reponse_eval)
+    print(f"The result was {reponse_eval}")
 
     # More tests to come...
+
 
 if __name__ == '__main__':
     _main()
